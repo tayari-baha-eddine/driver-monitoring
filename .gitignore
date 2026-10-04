@@ -1,0 +1,128 @@
+# ============================================================
+# Python
+# ============================================================
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# ============================================================
+# Environnements virtuels
+# ============================================================
+venv/
+env/
+ENV/
+.venv/
+.env
+
+# ============================================================
+# IDE / Éditeurs
+# ============================================================
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# ============================================================
+# Tests / Cache
+# ============================================================
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.cache
+
+# ============================================================
+# Jupyter
+# ============================================================
+.ipynb_checkpoints/
+
+# ============================================================
+# DATA — ne pas versionner
+# ============================================================
+data/*.db
+data/*.db-journal
+data/*.pkl
+data/*.json
+data/*.csv
+
+# ============================================================
+# MODELS — trop gros pour Git
+# ============================================================
+models/pytorch/*.pt
+models/pytorch/*.pth
+models/onnx/*.onnx
+models/**/*.onnx
+
+# ============================================================
+# OUTPUTS
+# ============================================================
+runs/
+*.log
+logs/
+output/
+outputs/
+recordings/
+
+# ============================================================
+# Ultralytics
+# ============================================================
+yolov8*.pt
+yolo*.pt
+settings.json
+
+# ============================================================
+# Fichiers temporaires
+# ============================================================
+*.tmp
+*.bak
+*.swp
+~$*
+
+# ============================================================
+# Mais on GARDE ces dossiers avec un .gitkeep
+# ============================================================
+!data/.gitkeep
+!models/pytorch/.gitkeep
+!models/onnx/.gitkeep
+
+# ============================================================
+# Scripts de dev / debug (garder en local, pas sur GitHub)
+# ============================================================
+check_env.py
+debug_cuda.py
+generate_sounds.py
+test_eyes.py
+test_face.py
+test_head_pose.py
+test_intelligence.py
+test_phone.py
+test_*.py
+!tests/test_*.py
+
+# Rapport / docs générés
+*.pdf
+*.png
+*.jpg
+*.jpeg
+!assets/sounds/.gitkeep

@@ -1,0 +1,11 @@
+opencv-python==4.10.0.84
+mediapipe==0.10.14
+ultralytics==8.3.0
+numpy==1.26.4
+streamlit==1.39.0
+plotly==5.24.1
+pandas==2.2.3
+pygame==2.6.1
+onnx==1.16.2
+onnxruntime==1.19.2
+pytest==8.3.3
