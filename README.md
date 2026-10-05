@@ -1,5 +1,65 @@
 \# 🚗 Driver Monitoring System
 
+Real-time Driver Monitoring System running on an NVIDIA RTX 4050.
+
+
+
+⚡ Performance at a Glance
+
+Metric
+
+CPU
+
+NVIDIA RTX 4050
+
+YOLOv8n inference
+
+~22 FPS
+
+~146 FPS
+
+Latency
+
+~45 ms
+
+~7 ms
+
+Speedup
+
+1×
+
+~6.6×
+
+Full pipeline: ~50–65 FPS at ~15–20 ms/frame.
+
+🧠 What This Project Does
+
+This project implements a multi-modal Driver Monitoring System (DMS) combining classical computer vision, deep learning, temporal reasoning, and GPU acceleration.
+
+The system continuously analyzes:
+
+Camera → Face → Eyes → Head Pose → Gaze → Phone → Driver State → Risk Score
+
+It detects and analyzes:
+
+😴 Drowsiness
+
+👁️ Eye closure and PERCLOS
+
+🥱 Yawning
+
+🧭 Head pose and gaze direction
+
+📱 Phone usage
+
+👤 Driver identity
+
+⚠️ Distraction and vigilance
+
+📊 Real-time driver risk
+
+The goal is not simply to detect individual events, but to build a temporal decision pipeline that combines multiple signals into a stable driver-state estimate.
+
 
 
 \*\*Système intelligent de surveillance du conducteur en temps réel\*\* — détection de somnolence, distraction et usage du téléphone via Computer Vision et Deep Learning.
