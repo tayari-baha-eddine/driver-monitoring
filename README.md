@@ -1,429 +1,64 @@
-\# 🚗 Driver Monitoring System
+# Driver Monitoring System
 
-Real-time Driver Monitoring System running on an NVIDIA RTX 4050.
+Système de surveillance de conducteur en temps réel — détection de somnolence, distraction, et usage du téléphone à partir d'une simple webcam.
 
+Tourne à **~50 FPS en 720p sur une RTX 4050 laptop (6 GB)**, avec phone detection + face recognition actifs simultanément. Stable sur des sessions de 30 minutes.
 
+## Pourquoi ce projet
 
-⚡ Performance at a Glance
+Je voulais apprendre PyTorch, CUDA et YOLO sur un projet concret qui ait du sens. La fatigue au volant tue — et les DMS (Driver Monitoring Systems) sont devenus obligatoires dans les véhicules neufs en Europe depuis 2024 (norme GSR2). C'était l'occasion de toucher à la fois à la vision par ordinateur, au deep learning temps réel, et à l'optimisation GPU sur quelque chose de tangible.
 
-Metric
+## Ce que ça fait
 
-CPU
+Pipeline complet, du pixel brut jusqu'au score de risque :
+Webcam → Face → Eyes → Head → Gaze → Phone → Driver State → Risk
 
-NVIDIA RTX 4050
+# Driver Monitoring System
 
-YOLOv8n inference
+Real-time driver monitoring from a single webcam — drowsiness, distraction, and phone usage detection.
 
-~22 FPS
+Runs at **~50 FPS at 720p on an RTX 4050 laptop (6 GB)** with phone detection and face recognition both active. Stable over 30-minute sessions.
 
-~146 FPS
+## Why I built this
 
-Latency
+I wanted to learn PyTorch, CUDA, and YOLO on something concrete. Driver fatigue kills people — and Driver Monitoring Systems have been mandatory in new cars in Europe since 2024 (GSR2 regulation). It was a good excuse to touch computer vision, real-time deep learning, and GPU optimization on a project that matters.
 
-~45 ms
+## What it does
 
-~7 ms
-
-Speedup
-
-1×
-
-~6.6×
-
-Full pipeline: ~50–65 FPS at ~15–20 ms/frame.
-
-🧠 What This Project Does
-
-This project implements a multi-modal Driver Monitoring System (DMS) combining classical computer vision, deep learning, temporal reasoning, and GPU acceleration.
-
-The system continuously analyzes:
-
-Camera → Face → Eyes → Head Pose → Gaze → Phone → Driver State → Risk Score
-
-It detects and analyzes:
-
-😴 Drowsiness
-
-👁️ Eye closure and PERCLOS
-
-🥱 Yawning
-
-🧭 Head pose and gaze direction
-
-📱 Phone usage
-
-👤 Driver identity
-
-⚠️ Distraction and vigilance
-
-📊 Real-time driver risk
-
-The goal is not simply to detect individual events, but to build a temporal decision pipeline that combines multiple signals into a stable driver-state estimate.
-
-
-
-\*\*Système intelligent de surveillance du conducteur en temps réel\*\* — détection de somnolence, distraction et usage du téléphone via Computer Vision et Deep Learning.
-
-
-
-!\[Python](https://img.shields.io/badge/Python-3.10-blue)
-
-!\[PyTorch](https://img.shields.io/badge/PyTorch-2.6.0-red)
-
-!\[CUDA](https://img.shields.io/badge/CUDA-12.4-green)
-
-!\[YOLOv8](https://img.shields.io/badge/YOLOv8-8.3-orange)
-
-!\[Tests](https://img.shields.io/badge/tests-24%20passed-brightgreen)
-
-
-
-\---
-
-
-
-\## 📋 Table des matières
-
-
-
-\- \[Présentation](#-présentation)
-
-\- \[Fonctionnalités](#-fonctionnalités)
-
-\- \[Architecture](#-architecture)
-
-\- \[Technologies](#-technologies)
-
-\- \[Installation](#-installation)
-
-\- \[Utilisation](#-utilisation)
-
-\- \[Performances](#-performances)
-
-\- \[Tests](#-tests)
-
-\- \[Structure du projet](#-structure-du-projet)
-
-\- \[Algorithmes clés](#-algorithmes-clés)
-
-\- \[Améliorations futures](#-améliorations-futures)
-
-\- \[Licence](#-licence)
-
-
-
-\---
-
-
-
-\## 🎯 Présentation
-
-
-
-Les accidents liés à la \*\*fatigue\*\* et à la \*\*distraction\*\* au volant sont une cause majeure de mortalité routière. Les systèmes DMS (\*Driver Monitoring Systems\*) sont désormais obligatoires dans les nouveaux véhicules en Europe (norme GSR2 depuis 2024).
-
-
-
-Ce projet reproduit la logique des DMS industriels :
-
-\- Détection \*\*multi-modale\*\* (visage, yeux, tête, téléphone)
-
-\- \*\*Fusion pondérée\*\* des signaux via un \*Risk Engine\* temporel
-
-\- \*\*Alertes\*\* sonores + visuelles + dashboard web temps réel
-
-\- \*\*Reconnaissance faciale\*\* du conducteur (profils multiples)
-
-\- \*\*Optimisation Edge AI\*\* (export ONNX + benchmark CPU/GPU)
-
-
-
-\---
-
-
-
-\## ✨ Fonctionnalités
-
-
-
-\### 🎥 Vision (perception)
-
-| Module | Description |
-
-|--------|-------------|
-
-| \*\*Face Detection\*\* | 468 landmarks 3D (MediaPipe FaceMesh) |
-
-| \*\*Eye Analysis\*\* | EAR (Eye Aspect Ratio) + calibration auto |
-
-| \*\*Mouth Analysis\*\* | MAR (Mouth Aspect Ratio) — bâillements |
-
-| \*\*Head Pose\*\* | Yaw/Pitch/Roll via `solvePnP` + calibration neutre |
-
-| \*\*Phone Detection\*\* | YOLOv8n deep learning (GPU) |
-
-| \*\*Face Recognition\*\* | Embeddings Facenet (VGGFace2, 512-D) |
-
-
-
-\### 🧠 Intelligence (raisonnement)
-
-| Module | Description |
-
-|--------|-------------|
-
-| \*\*Drowsiness\*\* | Durée de fermeture + PERCLOS + bâillements |
-
-| \*\*Distraction\*\* | Regard détourné + téléphone avec seuils temporels |
-
-| \*\*Risk Engine\*\* | Fusion pondérée + lissage EMA (0-100) |
-
-| \*\*Temporal State Engine\*\* | Confirmation + hystérésis (anti-flicker) |
-
-| \*\*Attention Scorer\*\* | Scores attention/vigilance + niveau de risque |
-
-
-
-\### 🖥️ Interface \& Monitoring
-
-| Module | Description |
-
-|--------|-------------|
-
-| \*\*Alert Manager\*\* | Alertes sonores (warning/critical) + couleur d'état |
-
-| \*\*HUD temps réel\*\* | Overlay OpenCV : état, scores, FPS, latence, conducteur |
-
-| \*\*SQLite Logger\*\* | Persistance des transitions d'état |
-
-| \*\*Dashboard Streamlit\*\* | Live / Historique / Conducteurs / Rapport PDF |
-
-| \*\*Rapport PDF\*\* | Génération automatique de rapports de session |
-
-
-
-\### ⚡ Optimisation
-
-| Module | Description |
-
-|--------|-------------|
-
-| \*\*Export ONNX\*\* | YOLOv8 PyTorch → ONNX (opset 12, simplifié) |
-
-| \*\*Benchmark\*\* | PyTorch vs ONNX × CPU vs GPU |
-
-
-
-\---
-
-
-
-\## 🏗️ Architecture
-
-┌─────────────────────────────────────────────────────────┐
-
-│ WEBCAM (1280×720) │
-
-└──────────────────────┬──────────────────────────────────┘
-
-│
-
-▼
-
-┌─────────────────────────────────────────────────────────┐
-
-│ VISION LAYER │
-
-│ ┌──────────────┬──────────────┬──────────────────┐ │
-
-│ │ FaceDetector │ PhoneDetector│ FaceRecognizer │ │
-
-│ │ (MediaPipe) │ (YOLOv8n) │ (Facenet VGGFace)│ │
-
-│ └──────┬───────┴──────┬───────┴────────┬─────────┘ │
-
-│ │ │ │ │
-
-│ ▼ ▼ ▼ │
-
-│ ┌──────────────┬──────────────┐ │
-
-│ │ EyeAnalyzer │ HeadPoseEst. │ │
-
-│ │ (EAR/MAR) │ (solvePnP) │ │
-
-│ └──────────────┴──────────────┘ │
-
-└──────────────────────┬──────────────────────────────────┘
-
-│
-
-▼
-
-┌─────────────────────────────────────────────────────────┐
-
-│ INTELLIGENCE LAYER │
-
-│ ┌─────────────────┬──────────────────┐ │
-
-│ │ DrowsinessDet. │ DistractionDet. │ │
-
-│ └────────┬────────┴────────┬─────────┘ │
-
-│ │ │ │
-
-│ ▼ ▼ │
-
-│ ┌────────────────────────────────────┐ │
-
-│ │ RiskEngine (fusion + EMA) │ │
-
-│ └─────────────────┬──────────────────┘ │
-
-│ ▼ │
-
-│ ┌────────────────────────────────────┐ │
-
-│ │ TemporalStateEngine (hystérésis) │ │
-
-│ └─────────────────┬──────────────────┘ │
-
-│ ▼ │
-
-│ ┌────────────────────────────────────┐ │
-
-│ │ AttentionScorer (0-100) │ │
-
-│ └────────────────────────────────────┘ │
-
-└──────────────────────┬──────────────────────────────────┘
-
-│
-
-┌──────────────┼──────────────┐
-
-▼ ▼ ▼
-
-┌───────────────┐ ┌──────────┐ ┌──────────────────┐
-
-│ HUD (OpenCV) │ │ Alerts │ │ SQLite Logger │
-
-│ │ │ (audio) │ │ (events) │
-
-└───────────────┘ └──────────┘ └─────────┬────────┘
-
-│
-
-▼
-
-┌───────────────────────┐
-
-│ Streamlit Dashboard │
-
-│ (Live/Hist/Rapport) │
-
-└───────────────────────┘
-
-
-\---
-
-
-
-\## 🛠️ Technologies
-
-
-
-\### Environnement
-
-| Composant | Version | Rôle |
-
-|-----------|---------|------|
-
-| \*\*Python\*\* | 3.10.22 | Langage principal |
-
-| \*\*Anaconda\*\* | env `driver-monitoring` | Environnement |
-
-| \*\*Windows\*\* | 10/11 | OS |
-
-
-
-\### Computer Vision
-
-| Librairie | Version | Rôle |
-
-|-----------|---------|------|
-
-| \*\*OpenCV\*\* | 4.11.0 | Capture, traitement, HUD, solvePnP |
-
-| \*\*MediaPipe\*\* | 0.10.14 | 468 landmarks faciaux |
-
-| \*\*NumPy\*\* | 1.26.4 | Calcul matriciel |
-
-
-
-\### Deep Learning
-
-| Librairie | Version | Rôle |
-
-|-----------|---------|------|
-
-| \*\*PyTorch\*\* | 2.6.0+cu124 | Framework DL |
-
-| \*\*CUDA\*\* | 12.4 | Accélération GPU |
-
-| \*\*Ultralytics YOLOv8\*\* | 8.3.0 | Détection téléphone |
-
-| \*\*facenet-pytorch\*\* | 2.6.0 | Reconnaissance faciale |
-
-| \*\*ONNX Runtime GPU\*\* | 1.23.2 | Inférence optimisée |
-
-
-
-\### Interface \& Data
-
-| Librairie | Version | Rôle |
-
-|-----------|---------|------|
-
-| \*\*Streamlit\*\* | 1.39.0 | Dashboard interactif |
-
-| \*\*Plotly\*\* | 5.24.1 | Graphiques |
-
-| \*\*Pandas\*\* | 2.2.3 | Analyse données |
-
-| \*\*SQLite\*\* | 3.53.4 | Persistance |
-
-| \*\*reportlab\*\* | — | Génération PDF |
-
-| \*\*pygame\*\* | 2.6.1 | Alertes sonores |
-
-
-
-\### Matériel recommandé
-
-\- \*\*GPU\*\* : NVIDIA RTX 4050 (ou supérieur) — 6 GB VRAM
-
-\- \*\*Webcam\*\* : 1280×720 @ 30+ FPS
-
-\- \*\*RAM\*\* : 8 GB minimum
-
-
-
-\---
-
-
-
-\## 🚀 Installation
-
-
-
-\### 1. Cloner / créer l'environnement
-
-
-
-```bash
-
+Full pipeline, from raw pixels to a risk score:
 conda create -n driver-monitoring python=3.10 -y
-
 conda activate driver-monitoring
+pip install -r requirements.txt
 
+
+## Usage
+Main pipeline
+python main.py
+
+Streamlit dashboard (live + history + reports)
+streamlit run dashboard/app.py
+
+PyTorch vs ONNX × CPU vs GPU benchmark
+python benchmark.py
+
+
+## Limitations
+
+- **No testing on real drivers in real driving conditions.** All measurements are webcam-at-desk.
+- **No mobile export yet.** The ONNX model isn't quantized — int8 would be needed to run on a Jetson Nano or Raspberry Pi.
+- **Face recognition is sensitive to lighting.** Backlight or night driving makes Facenet embeddings unstable.
+- **The Risk Engine weights are hand-tuned.** Fusion weights (EAR, MAR, head, phone) are fixed. A production DMS would learn these per driver.
+
+## What's next
+
+Three directions:
+
+1. **int8 export** to port the system to Jetson Nano — a real embedded DMS.
+2. **Fine-tune the Risk Engine** on real sessions with user feedback.
+3. **Add seatbelt + hands-on-wheel detection** — two signals required by the GSR2 regulation.
+
+## Context
+
+Personal project, built alongside my studies at ENIG (École Nationale d'Ingénieurs de Gabès) to go deeper into real-time deep learning and GPU optimization. Goal: build a strong portfolio for international internships in HPC / computer vision.
+
+Contact: tayari.bahaeddine@gmail.com
